@@ -1,0 +1,24 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+
+    "SharePoint__TenantId": "<entra-tenant-guid>",
+    "SharePoint__ClientId": "<app-registration-client-id>",
+    "SharePoint__ClientSecret": "<client-secret>",
+    "SharePoint__Hostname": "contoso.sharepoint.com",
+    "SharePoint__SitePath": "sites/YourSite",
+    "SharePoint__LibraryName": "Documents",
+    "SharePoint__FolderPath": "",
+
+    "Search__Endpoint": "https://<your-search-service>.search.windows.net",
+    "Search__ApiKey": "<search-service-ADMIN-key>",
+    "Search__KnowledgeSourceName": "<file-knowledge-source-name>",
+    "Search__ApiVersion": "2026-08-01-preview",
+
+    "Sync__DeleteOrphans": "true",
+    "Sync__MaxConcurrency": "4",
+    "Sync__MaxFileSizeMB": "100"
+  }
+}

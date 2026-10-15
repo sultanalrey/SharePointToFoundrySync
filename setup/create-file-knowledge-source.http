@@ -1,0 +1,45 @@
+### One-time setup — only if your knowledge base doesn't already have a FILE knowledge source.
+### Run with the VS Code REST Client extension or Visual Studio's .http support.
+### Afterwards, add the knowledge source to your knowledge base (Foundry portal > Build > Knowledge).
+
+@search-endpoint = https://<your-search-service>.search.windows.net
+@api-key = <search-service-admin-key>
+@ks-name = sharepoint-docs
+@aoai-endpoint = https://<your-foundry-resource>.openai.azure.com
+@aoai-embedding-deployment = text-embedding-3-large
+@aoai-embedding-model = text-embedding-3-large
+
+### Check what exists (look for "kind": "file")
+GET {{search-endpoint}}/knowledgesources?api-version=2026-08-01-preview&$select=name,kind
+api-key: {{api-key}}
+
+### Create the file knowledge source
+# The search service's managed identity needs "Cognitive Services User" on the Foundry resource
+# to call the embedding model.
+PUT {{search-endpoint}}/knowledgesources/{{ks-name}}?api-version=2026-08-01-preview
+api-key: {{api-key}}
+Content-Type: application/json
+Prefer: return=representation
+
+{
+  "name": "{{ks-name}}",
+  "kind": "file",
+  "description": "Documents mirrored from the SharePoint shared library every 15 minutes.",
+  "fileParameters": {
+    "ingestionParameters": {
+      "embeddingModel": {
+        "kind": "azureOpenAI",
+        "azureOpenAIParameters": {
+          "resourceUri": "{{aoai-endpoint}}",
+          "deploymentId": "{{aoai-embedding-deployment}}",
+          "modelName": "{{aoai-embedding-model}}"
+        }
+      },
+      "contentExtractionMode": "minimal"
+    }
+  }
+}
+
+### Inspect what the function has synced
+GET {{search-endpoint}}/knowledgesources/{{ks-name}}/files?api-version=2026-08-01-preview
+api-key: {{api-key}}
