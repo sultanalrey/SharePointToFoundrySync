@@ -16,7 +16,7 @@ public sealed record SharePointFile(string ItemId, string RelativePath, string C
 public sealed class SharePointClient
 {
     private const string Graph = "https://graph.microsoft.com/v1.0";
-    private static readonly TokenRequestContext GraphScope = new(["https://graph.microsoft.com/.default"]);
+    private static readonly TokenRequestContext GraphScope = new(new[] { "https://graph.microsoft.com/.default" });
     private const string ItemSelect = "$select=id,name,size,cTag,lastModifiedDateTime,file,folder&$top=999";
 
     private readonly HttpClient _http;

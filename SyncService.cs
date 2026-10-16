@@ -13,11 +13,7 @@ public sealed record SyncResult(int Uploaded, int Updated, int Unchanged, int De
 ///   unchanged             -> skip (compared by SharePoint cTag stored as file metadata)
 ///   gone from SharePoint  -> delete (only files this function created)
 /// </summary>
-public sealed class SyncService(
-    SharePointClient sharePoint,
-    KnowledgeSourceClient knowledgeSource,
-    IOptions<SyncOptions> options,
-    ILogger<SyncService> log)
+public sealed class SyncService
 {
     public const string SourceTag = "sharepoint-sync";
 
@@ -29,7 +25,22 @@ public sealed class SyncService(
         ".json", ".txt", ".md", ".markdown", ".html", ".htm", ".csv", ".sh"
     };
 
-    private readonly SyncOptions _options = options.Value;
+    private readonly SharePointClient sharePoint;
+    private readonly KnowledgeSourceClient knowledgeSource;
+    private readonly SyncOptions _options;
+    private readonly ILogger<SyncService> log;
+
+    public SyncService(
+        SharePointClient sharePoint,
+        KnowledgeSourceClient knowledgeSource,
+        IOptions<SyncOptions> options,
+        ILogger<SyncService> log)
+    {
+        this.sharePoint = sharePoint;
+        this.knowledgeSource = knowledgeSource;
+        _options = options.Value;
+        this.log = log;
+    }
 
     public async Task<SyncResult> RunAsync(CancellationToken ct)
     {

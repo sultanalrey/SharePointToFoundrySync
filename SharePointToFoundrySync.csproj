@@ -1,27 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- .NET 8 isolated support ends with .NET 8 itself on 10 Nov 2026, so target .NET 10 (LTS). -->
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- C# 10 is the default for net6.0; the code avoids newer language features so it builds on a .NET 6 SDK. -->
+    <LangVersion>10.0</LangVersion>
     <RootNamespace>SharePointToFoundrySync</RootNamespace>
   </PropertyGroup>
 
   <!--
-    Floating versions so the first restore picks up the latest stable releases.
-    After the first successful build, pin them to the restored versions (or enable
-    RestorePackagesWithLockFile) so builds are reproducible.
+    Worker 1.x is the line that supports .NET 6 (Worker 2.x and FunctionsApplication.CreateBuilder need .NET 8+).
+    Floating versions pick up the latest 1.x on first restore; pin them afterwards
+    (or enable RestorePackagesWithLockFile) for reproducible builds.
   -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.*" />
-    <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.*" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.*" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.*" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.*" />
-    <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="2.*" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="1.*" />
     <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.*" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.*" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.*" />
     <PackageReference Include="Azure.Identity" Version="1.*" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 # SharePoint → Foundry IQ knowledge source sync
 
-An Azure Function (C#, .NET 10, isolated worker) that runs every 15 minutes. It mirrors the files in a
+An Azure Function (C#, .NET 6, isolated worker) that runs every 15 minutes. It mirrors the files in a
 SharePoint document library into the file knowledge source behind your Foundry knowledge base.
 
 | SharePoint state            | What happens in the knowledge source                              |
@@ -66,9 +66,14 @@ func azure functionapp publish <app-name>
 To trigger a run immediately while testing:
 `POST http://localhost:7071/admin/functions/SharePointToKnowledgeSourceSync` with body `{}`.
 
-**Hosting:** use the **Flex Consumption** plan. `host.json` sets a 10-minute timeout, which also works on
-classic Consumption. The first sync of a large library may need more than one run. That's fine because
+**Hosting:** .NET 6 is out of support (Nov 2024), and Flex Consumption doesn't offer it. Use a Consumption,
+Premium or Dedicated (App Service) plan, with the stack set to .NET 6 (isolated).
+`host.json` sets a 10-minute timeout, the maximum on Consumption. The first sync of a large library may need more than one run. That's fine because
 each run picks up where the last one stopped.
+
+## Moving to .NET 8/10 later
+The code is plain C# 10, so upgrading means changing only `TargetFramework` and the package versions in the
+`.csproj`. Optionally switch `Program.cs` to `FunctionsApplication.CreateBuilder` (Worker 2.x).
 
 ## Limits to be aware of (file knowledge source, 2026-08-01-preview)
 - **200 files** per knowledge source and **100 MB** per file (50 MB on Free/Basic). The function logs
